@@ -6,22 +6,26 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpRequest.BodyPublishers;
 
 public class LLMClient {
-    private static String endpoint = "http://localhost:1234/v1/chat/completions"; // default fallback
+    private static String endpoint = "http://localhost:1234/v1/chat/completions";
+    private static String model = "codellama-13b-instruct";
+    private static double temperature = 0.4;
 
-    public static void setEndpoint(String baseUrl) {
-        endpoint = baseUrl.endsWith("/") ? baseUrl + "v1/chat/completions" : baseUrl + "/v1/chat/completions";
+    public static void configure(String hostUrl, String mdl, double tmp) {
+        endpoint = hostUrl.endsWith("/") ? hostUrl + "v1/chat/completions" : hostUrl + "/v1/chat/completions";
+        model = mdl;
+        temperature = tmp;
     }
 
     public static String generate(String prompt) throws Exception {
         String payload = """
         {
-          "model": "codellama-13b-instruct",
+          "model": "%s",
           "messages": [
             {"role": "user", "content": "%s"}
           ],
-          "temperature": 0.4
+          "temperature": %.2f
         }
-        """.formatted(prompt.replace("\"", "\\\""));
+        """.formatted(model, prompt.replace("\"", "\\\""), temperature);
 
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
