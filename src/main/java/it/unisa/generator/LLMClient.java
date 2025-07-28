@@ -37,11 +37,11 @@ public class LLMClient {
         ObjectMapper mapper = new ObjectMapper();
         String jsonPayload = mapper.writeValueAsString(body);
 
-        System.out.println("------ HTTP REQUEST DEBUG ------");
+        /*System.out.println("------ HTTP REQUEST DEBUG ------");
         System.out.println("POST " + endpoint);
         System.out.println("Headers: Content-Type=application/json");
         System.out.println("Payload:\n" + jsonPayload);
-        System.out.println("------ END HTTP REQUEST --------");
+        System.out.println("------ END HTTP REQUEST --------");*/
 
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
