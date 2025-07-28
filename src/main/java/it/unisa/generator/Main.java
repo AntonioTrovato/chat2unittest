@@ -5,10 +5,10 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        if (args.length < 10 || !args[1].equals("-host")) {
+        if (args.length < 8 || !args[1].equals("-host")) {
             System.err.println("Usage: java -jar test2benchmark.jar <input.json> -host <llm_url> " +
                     "[-mdl <model>] [-tmp <temperature>] " +
-                    "-src <testSourceRoot> -bin <testClassRoot> -jmh <benchmarkOutputRoot> <ju2jmh.jar>");
+                    "-src <testSourceRoot> -bin <testClassRoot> -jmh <benchmarkOutputRoot>");
             System.exit(1);
         }
 
@@ -19,10 +19,8 @@ public class Main {
         String testSourceRoot = null;
         String testClassRoot = null;
         String benchmarkOutputRoot = null;
-        String ju2jmhPath = args[args.length - 1]; // ultimo parametro
 
-        // parsing opzionale e obbligatorio
-        for (int i = 3; i < args.length - 1; i++) {
+        for (int i = 3; i < args.length; i++) {
             switch (args[i]) {
                 case "-mdl":
                     model = args[++i];
@@ -58,7 +56,7 @@ public class Main {
             String testContent = PromptBuilder.buildJUnitPrompt(filePath, methods);
             String testCode = LLMClient.generate(testContent);
             File testFile = TestFileWriter.writeJUnitTest(filePath, testCode);
-            Ju2JmhInvoker.convert(testFile, ju2jmhPath, testSourceRoot, testClassRoot, benchmarkOutputRoot);
+            Ju2JmhInvoker.convert(testFile, testSourceRoot, testClassRoot, benchmarkOutputRoot);
         }
 
         System.out.println("DONE.");
