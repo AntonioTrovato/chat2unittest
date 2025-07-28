@@ -15,11 +15,7 @@
 
 ---
 
-## 📁 Project Structure (Expected)
-├── src/
-│ ├── main/java/ # Production code
-│ └── test/java/ # Generated tests go here
-└── input.json # File listing methods to test
+<pre> ## 📁 Project Structure (Expected) project-root/ ├── src/ │ ├── main/ │ │ └── java/ # Production code │ └── test/ │ └── java/ # Generated tests go here └── input.json # File listing methods to test </pre>
 
 The tool supports also projects with multiple submodules, each having that structure (module1/src/..., module2/src/..., ect...).
 
@@ -28,7 +24,6 @@ The tool supports also projects with multiple submodules, each having that struc
 
 ## 📦 Prerequisites
 
-- Java 11 or higher
 - A running LLM service exposing a `POST /v1/chat/completions` endpoint
 - The `chat2unittest.jar` file
 
