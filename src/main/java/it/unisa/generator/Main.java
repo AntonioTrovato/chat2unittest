@@ -45,7 +45,5 @@ public class Main {
             File testFile = TestFileWriter.writeJUnitTest(filePath, testCode);
             //System.out.println("Test file written: " + testFile.getAbsolutePath());
         }
-
-        System.out.println("DONE.");
     }
 }
