@@ -6,9 +6,10 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws Exception {
         if (args.length < 8 || !args[1].equals("-host")) {
-            System.err.println("Usage: java -jar test2benchmark.jar <input.json> -host <llm_url> " +
-                    "[-mdl <model>] [-tmp <temperature>] " +
-                    "-src <testSourceRoot> -bin <testClassRoot> -jmh <benchmarkOutputRoot>");
+            System.err.println("Usage: java -jar test2benchmark.jar <input.json> -host <llm_full_url> " +
+                    "[-mdl <model>] [-tmp <temperature>] -src <testSourceRoot> -bin <testClassRoot> -jmh <benchmarkOutputRoot>");
+            System.err.println("Example: java -jar test2benchmark.jar input.json -host https://xxxxxxxx/v1/chat/completions " +
+                    "-mdl codellama-13b-instruct -tmp 0.4 -src module/src/test/java -bin module/build/classes/java/test -jmh module/src/jmh/java");
             System.exit(1);
         }
 
@@ -53,9 +54,13 @@ public class Main {
         Map<String, List<String>> input = JsonInputParser.parse(jsonPath);
         for (String filePath : input.keySet()) {
             List<String> methods = input.get(filePath);
+            System.out.println("Processing file: " + filePath);
             String testContent = PromptBuilder.buildJUnitPrompt(filePath, methods);
+            System.out.println("Generated prompt: " + testContent);
             String testCode = LLMClient.generate(testContent);
+            System.out.println("Generated test code:\n" + testCode);
             File testFile = TestFileWriter.writeJUnitTest(filePath, testCode);
+            System.out.println("Test file written: " + testFile.getAbsolutePath());
             Ju2JmhInvoker.convert(testFile, testSourceRoot, testClassRoot, benchmarkOutputRoot);
         }
 

@@ -2,6 +2,7 @@ package it.unisa.generator;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.List;
 
 public class Ju2JmhInvoker {
 
@@ -25,13 +26,19 @@ public class Ju2JmhInvoker {
         String fqn = computeFQN(testFile, testSourceRoot);
 
         // Lancia ju2jmh
-        ProcessBuilder pb = new ProcessBuilder(
+        List<String> command = List.of(
                 "java", "-jar", ju2jmhJar.toAbsolutePath().toString(),
                 testSourceRoot,
                 testClassRoot,
                 benchmarkOutputRoot,
                 fqn
         );
+
+        System.out.println("\n-------- ju2jmh COMMAND --------");
+        System.out.println(String.join(" ", command));
+        System.out.println("--------------------------------\n");
+
+        ProcessBuilder pb = new ProcessBuilder(command);
 
         pb.inheritIO();
         Process process = pb.start();
