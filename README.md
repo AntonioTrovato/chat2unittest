@@ -15,7 +15,10 @@
 
 ---
 
-<pre> ## 📁 Project Structure (Expected) project-root/ ├── src/ │ ├── main/ │ │ └── java/ # Production code │ └── test/ │ └── java/ # Generated tests go here └── input.json # File listing methods to test </pre>
+## 📁 Project Structure (Expected) 
+project-root/ 
+  ├── src/ │ 
+    ├── main/ │ │ └── java/ # Production code │ └── test/ │ └── java/ # Generated tests go here └── input.json # File listing methods to test
 
 The tool supports also projects with multiple submodules, each having that structure (module1/src/..., module2/src/..., ect...).
 
