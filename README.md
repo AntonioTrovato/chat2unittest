@@ -71,6 +71,8 @@ Where:
 - mdl: Model name (e.g., "codellama-13b-instruct")
 - tmp: Temperature for the LLM
 
+If you want to use **OpenAI** as your LLM, you just need to set the `OPENAI_API_KEY` environment variable.
+
 ---
 
 ## 📝 Output
