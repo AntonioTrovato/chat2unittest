@@ -13,6 +13,9 @@ import java.util.Locale;
 import java.util.Map;
 
 public class LLMClient {
+    // Support for api keys
+    private static String apiKey = System.getenv("OPENAI_API_KEY");
+
     private static String endpoint = "http://localhost:1234/v1/chat/completions";
     private static String model = "codellama-13b-instruct";
     private static double temperature = 0.4;
@@ -43,9 +46,18 @@ public class LLMClient {
         System.out.println("Payload:\n" + jsonPayload);
         System.out.println("------ END HTTP REQUEST --------");*/
 
-        HttpRequest req = HttpRequest.newBuilder()
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
-                .header("Content-Type", "application/json")
+                .header("Content-Type", "application/json");
+
+        if (endpoint.contains("openai.com")) {
+            if (apiKey == null || apiKey.isBlank()) {
+                throw new RuntimeException("OPENAI_API_KEY environment variable not set");
+            }
+            builder.header("Authorization", "Bearer " + apiKey);
+        }
+
+        HttpRequest req = builder
                 .POST(BodyPublishers.ofString(jsonPayload))
                 .build();
 
@@ -68,20 +80,23 @@ public class LLMClient {
     private static String cleanCode(String raw) {
         if (raw == null) return "";
 
-        String cleaned = raw.trim();
-
-        // Rimuove blocchi markdown ```java ... ``` o simili
-        if (cleaned.startsWith("```")) {
-            cleaned = cleaned.replaceFirst("^```[a-zA-Z]*\\s*", ""); // inizio blocco
-            cleaned = cleaned.replaceFirst("\\s*```\\s*$", "");       // fine blocco
+        // Se c'è un blocco ```java, prendiamo SOLO quello
+        int start = raw.indexOf("```");
+        if (start != -1) {
+            int end = raw.lastIndexOf("```");
+            if (end > start) {
+                raw = raw.substring(start + 3, end);
+                raw = raw.replaceFirst("^java\\s*", "");
+            }
         }
 
-        // Rimuove eventuali backtick singoli "`"
-        if (cleaned.startsWith("`") && cleaned.endsWith("`")) {
-            cleaned = cleaned.substring(1, cleaned.length() - 1);
+        // Fallback: prendiamo da 'package' in poi
+        int pkg = raw.indexOf("package ");
+        if (pkg != -1) {
+            raw = raw.substring(pkg);
         }
 
-        return cleaned.trim();
+        return raw.trim();
     }
 
 }
